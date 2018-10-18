@@ -1,0 +1,72 @@
+<?xml version="1.0" ?>
+<config>
+    <tabs>
+        <bluethink translate="label" module="deal">
+            <label>Bluethink Deal Extensions</label>
+            <sort_order>200</sort_order>
+        </bluethink>
+    </tabs>
+    <sections>
+        <deal translate="label" module="deal">
+            <label>Deal</label>
+            <tab>bluethink</tab>
+            <frontend_type>text</frontend_type>
+            <sort_order>990</sort_order>
+            <show_in_default>1</show_in_default>
+            <show_in_website>1</show_in_website>
+            <show_in_store>1</show_in_store>
+ 
+            <groups>
+                <config translate="label" module="deal">
+                    <label>Deal Configuration</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>1</sort_order>
+                    <show_in_default>1</show_in_default>
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+ 
+                    <fields>
+                        <deal_input translate="label">
+                            <label>Deal Title </label>
+                            <comment>Enter Deal title</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </deal_input>
+                        <deal_input1 translate="label">
+                            <label>Deal Start time In seconds: </label>
+                            <comment>Enter time in seconds.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </deal_input1>
+                        <deal_input2 translate="label">
+                            <label>Deal End time In seconds:</label>
+                            <comment>Enter time in seconds.</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>1</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </deal_input2>
+                        <banner translate="label comment">
+                            <label>Popup Image</label>
+                            <frontend_type>image</frontend_type>
+                            <backend_model>adminhtml/system_config_backend_image</backend_model>
+                            <upload_dir config="system/filesystem/media" scope_info="1">banner/images</upload_dir>
+                            <base_url type="media" scope_info="1">banner/images</base_url>
+                            <sort_order>2</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </banner>
+                    </fields>
+                </config>
+            </groups>
+        </deal>
+    </sections>
+</config>

@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us">
+<head>
+<title>jQuery Product Slider - WebDesign&amp;Such</title>
+
+<!--
+  jQuery library
+-->
+<script type="text/javascript" src="jquery-1.2.3.pack.js"></script>
+<!--
+  jCarousel library
+-->
+<script type="text/javascript" src="jquery.jcarousel.pack.js"></script>
+<!--
+  jCarousel core stylesheet
+-->
+<link rel="stylesheet" type="text/css" href="jquery.jcarousel.css" />
+<!--
+  jCarousel skin stylesheet
+-->
+<link rel="stylesheet" type="text/css" href="skins.css" />
+
+<script type="text/javascript">
+function mycarousel_initCallback(carousel)
+{
+    // Disable autoscrolling if the user clicks the prev or next button.
+    carousel.buttonNext.bind('click', function() {
+        carousel.startAuto(0);
+    });
+
+    carousel.buttonPrev.bind('click', function() {
+        carousel.startAuto(0);
+    });
+
+    // Pause autoscrolling if the user moves with the cursor over the clip.
+    carousel.clip.hover(function() {
+        carousel.stopAuto();
+    }, function() {
+        carousel.startAuto();
+    });
+};
+
+jQuery(document).ready(function() {
+    jQuery('#mycarousel').jcarousel({
+        auto: 3,
+        wrap: 'last',
+		scroll: 1,
+		initCallback: mycarousel_initCallback
+    });
+});
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+</script>
+</head>
+<body>
+<!-- <div align="center"><a href="http://www.webdesignandsuch.com"><img src="http://webdesignandsuch.com/wp-content/themes/elegant-grunge/images/wds-demo.png" style="margin-top:0px"/></a>    </div> -->
+
+<div id="wrap">
+
+
+  <ul id="mycarousel" class="jcarousel-skin-tango">
+    <li><a href="http://www.apple.com/macbookpro/" target="_blank"><img src="1.jpg" alt="" name="a" width="240" height="154" id="a"/></a></li>
+    <li><a href="http://www.apple.com/ipodtouch/" target="_blank"><img src="2.jpg" alt="" name="b" width="240" height="154" id="b"/></a></li>
+
+    <li><a href="http://www.apple.com/imac/" target="_blank"><img src="3.jpg" alt="" name="c" width="240" height="154" id="c" /></a></li>
+    <li><a href="http://www.apple.com/macbookair/" target="_blank"><img src="4.jpg" alt="" name="d" width="240" height="154" id="d"/></a></li>
+    <li><a href="http://www.apple.com/iphone/" target="_blank"><img src="5.jpg" alt="" name="e" width="240" height="154" id="e"/></a></li>
+    <li><a href="http://www.apple.com/macpro/" target="_blank"><img src="6.jpg" alt="" name="f" width="240" height="154" id="f"/></a></li>
+    <li><a href="http://www.apple.com/ipodnano/" target="_blank"><img src="7.jpg" alt="" name="g" width="240" height="154" id="g"/></a></li>
+    <li><a href="http://www.apple.com/macbook/" target="_blank"><img src="8.jpg" alt="" name="h" width="240" height="154" id="h"/></a></li>
+    <li><a href="http://www.apple.com/ipodclassic/" target="_blank"><img src="9.jpg" alt="" name="i" width="240" height="154" id="i"/></a></li>
+    
+  </ul>
+<div style="text-align:center; width:100%; margin-top:80px; font-family:Palatino, Baskerville, Georgia, serif; font-size:11px; ">This is a demo of a product slider created off the jCarousel jQuery slider. <a href="#">Check out the tutorial here</a>, where you can download the source code for this slider.</div>
+
+</div>
+</body>
+</html>

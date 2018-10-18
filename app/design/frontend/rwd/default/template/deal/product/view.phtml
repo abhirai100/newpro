@@ -1,0 +1,333 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Product view template
+ *
+ * @see Mage_Catalog_Block_Product_View
+ * @see Mage_Review_Block_Product_View
+ */
+?>
+ <?php 
+$endtime=Mage::getStoreConfig('deal/config/deal_input1',Mage::app()->getStore());
+$starttime=Mage::getStoreConfig('deal/config/deal_input2',Mage::app()->getStore());
+
+
+?>
+
+<?php 
+session_start(); 
+if (!isset($_SESSION['endOfTimer'])){ 
+    $endOfTimer = time() + $endtime  ; 
+    $_SESSION['endOfTimer'] = $endOfTimer; 
+} 
+
+if(($_SESSION['endOfTimer'] - time()) < 0) { 
+      $timeTilEnd = 0; 
+} 
+else { 
+      $timeTilEnd = $_SESSION['endOfTimer'] - time(); 
+} 
+
+if($timeTilEnd <= 0) {  
+/*session_destroy();*/ 
+} 
+
+
+
+if (!isset($_SESSION['startOfTimer'])){ 
+    $startOfTimer = time() + $starttime ; 
+    $_SESSION['startOfTimer'] = $startOfTimer; 
+} 
+
+if(($_SESSION['startOfTimer'] - time()) < 0) { 
+      $timeTilStart = 0; 
+} 
+else { 
+      $timeTilStart = $_SESSION['startOfTimer'] - time(); 
+} 
+
+if($timeTilStart <= 0) {  
+session_destroy(); 
+} 
+
+
+?>
+
+<h2 id="dstart">Deal Start In</h2><div id="countdowntimertxt" class="countdowntimer">00:00:00</div>
+<h2 id="dend" style="display:none;">Deal End In</h2><div id="blockhide" class="blockhide" style="display:none;">00:00:00</div>
+
+
+
+    <script type="text/javascript">
+     var sTime = new Date().getTime();
+    var countDown =<?php echo $timeTilEnd; ?>;
+
+    function UpdateCountDownTime() {
+        var cTime = new Date().getTime();
+        var diff = cTime - sTime;
+        var timeStr = '';
+        var seconds = countDown - Math.floor(diff / 1000);
+        if (seconds >= 0) {
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor( (seconds-(hours*3600)) / 60);
+            seconds -= (hours*3600) + (minutes*60);
+            if( hours < 10 ){
+                timeStr = "0" + hours;
+            }else{
+                timeStr = hours;
+            }
+            if( minutes < 10 ){
+                timeStr = timeStr + ":0" + minutes;
+            }else{
+                timeStr = timeStr + ":" + minutes;
+            }
+            if( seconds < 10){
+                timeStr = timeStr + ":0" + seconds;
+            }else{
+                timeStr = timeStr + ":" + seconds;
+            }
+            document.getElementById("countdowntimertxt").innerHTML = timeStr;
+        }else{
+            document.getElementById("countdowntimertxt").style.display="none";
+            document.getElementById("deal_cart").style.display="block";
+            document.getElementById("dstart").style.display="none";
+            clearInterval(counter);
+            document.getElementById("dend").style.display="block";
+            document.getElementById("blockhide").style.display="block";
+            
+            var s1Time = new Date().getTime();
+            var countDownhide = <?php echo $timeTilStart; ?>;
+
+            function RemoveCountDownTime() {
+        var c1Time = new Date().getTime();
+        var diff = c1Time - s1Time;
+        var timeStr1 = '';
+        var seconds = countDownhide - Math.floor(diff / 1000);
+        if (seconds >= 0) {
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor( (seconds-(hours*3600)) / 60);
+            seconds -= (hours*3600) + (minutes*60);
+            if( hours < 10 ){
+                timeStr1 = "0" + hours;
+            }else{
+                timeStr1 = hours;
+            }
+            if( minutes < 10 ){
+                timeStr1 = timeStr1 + ":0" + minutes;
+            }else{
+                timeStr1 = timeStr1 + ":" + minutes;
+            }
+            if( seconds < 10){
+                timeStr1 = timeStr1 + ":0" + seconds;
+            }else{
+                timeStr1 = timeStr1 + ":" + seconds;
+            }
+            document.getElementById("blockhide").innerHTML = timeStr1;
+        }else{
+            document.getElementById("blockhide").style.display="none";
+            document.getElementById("dend").style.display="none";
+            document.getElementById("deal_cart").style.display="none";
+            clearInterval(counter1);
+            
+            
+        }
+    }
+    RemoveCountDownTime();
+    var counter1 = setInterval(RemoveCountDownTime, 500);
+    
+
+        }
+    }
+     UpdateCountDownTime();
+    var counter = setInterval(UpdateCountDownTime, 500);
+
+</script>
+
+
+
+
+    <!-- deal_counter end-->
+<?php $_helper = $this->helper('catalog/output'); ?>
+<?php $_product = $this->getProduct(); ?>
+<script type="text/javascript">
+    var optionsPrice = new Product.OptionsPrice(<?php echo $this->getJsonConfig() ?>);
+</script>
+<div id="messages_product_view"><?php echo $this->getMessagesBlock()->toHtml() ?></div>
+<div class="product-view">
+    <div class="product-essential">
+        <form action="<?php echo $this->getSubmitUrl($_product) ?>" method="post" id="product_addtocart_form"<?php if($_product->getOptions()): ?> enctype="multipart/form-data"<?php endif; ?>>
+            <?php echo $this->getBlockHtml('formkey') ?>
+            <div class="no-display">
+                <input type="hidden" name="product" value="<?php echo $_product->getId() ?>" />
+                <input type="hidden" name="related_product" id="related-products-field" value="" />
+            </div>
+
+            <div class="product-img-box">
+                <div class="product-name">
+                    <h1><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></h1>
+                </div>
+                <?php echo $this->getChildHtml('media') ?>
+            </div>
+
+            <div class="product-shop">
+                <div class="product-name">
+                    <span class="h1"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></span>
+                </div>
+
+                <div class="price-info">
+                    <?php echo $this->getPriceHtml($_product); ?>
+                    <?php echo $this->getChildHtml('bundle_prices') ?>
+                    <?php echo $this->getTierPriceHtml() ?>
+                </div>
+
+                <div class="extra-info">
+                    <?php echo $this->getReviewsSummaryHtml($_product, 'default', false)?>
+                    <?php echo $this->getChildHtml('product_type_availability'); ?>
+                </div>
+
+                <?php echo $this->getChildHtml('alert_urls') ?>
+
+                <?php if ($_product->getShortDescription()):?>
+                    <div class="short-description">
+                        <div class="std"><?php echo $_helper->productAttribute($_product, nl2br($_product->getShortDescription()), 'short_description') ?></div>
+                    </div>
+                <?php endif;?>
+
+
+
+
+                <?php echo $this->getChildHtml('other');?>
+
+                <?php if ($_product->isSaleable() && $this->hasOptions()):?>
+                    <?php echo $this->getChildChildHtml('container1', '', true, true) ?>
+                <?php endif;?>
+
+            </div>
+
+            <div class="add-to-cart-wrapper">
+                <?php echo $this->getChildHtml('product_type_data') ?>
+                <?php echo $this->getChildHtml('extrahint') ?>
+
+                <?php if (!$this->hasOptions()):?>
+                    <div class="add-to-box">
+                        <?php if($_product->isSaleable()): ?>
+                        <div id="deal_cart" style="display:none">
+                            <?php echo $this->getChildHtml('addtocart') ?>
+                        </div>
+                            <?php if( $this->helper('wishlist')->isAllow() || $_compareUrl=$this->helper('catalog/product_compare')->getAddUrl($_product)): ?>
+                                <span class="or"><?php echo $this->__('OR') ?></span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                        <?php echo $this->getChildHtml('addto') ?>
+                        <?php echo $this->getChildHtml('sharing') ?>
+                    </div>
+                    <?php echo $this->getChildHtml('extra_buttons') ?>
+                <?php elseif (!$_product->isSaleable()): ?>
+                    <div class="add-to-box">
+                        <?php echo $this->getChildHtml('addto') ?>
+                        <?php echo $this->getChildHtml('sharing') ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+            <?php echo $this->getChildHtml('related_products') ?>
+
+            <div class="clearer"></div>
+            <?php if ($_product->isSaleable() && $this->hasOptions()):?>
+                <?php echo $this->getChildChildHtml('container2', '', true, true) ?>
+            <?php endif;?>
+        </form>
+        <script type="text/javascript">
+        //<![CDATA[
+            var productAddToCartForm = new VarienForm('product_addtocart_form');
+            productAddToCartForm.submit = function(button, url) {
+                if (this.validator.validate()) {
+                    var form = this.form;
+                    var oldUrl = form.action;
+
+                    if (url) {
+                       form.action = url;
+                    }
+                    var e = null;
+                    try {
+                        this.form.submit();
+                    } catch (e) {
+                    }
+                    this.form.action = oldUrl;
+                    if (e) {
+                        throw e;
+                    }
+
+                    if (button && button != 'undefined') {
+                        button.disabled = true;
+                    }
+                }
+            }.bind(productAddToCartForm);
+
+            productAddToCartForm.submitLight = function(button, url){
+                if(this.validator) {
+                    var nv = Validation.methods;
+                    delete Validation.methods['required-entry'];
+                    delete Validation.methods['validate-one-required'];
+                    delete Validation.methods['validate-one-required-by-name'];
+                    // Remove custom datetime validators
+                    for (var methodName in Validation.methods) {
+                        if (methodName.match(/^validate-datetime-.*/i)) {
+                            delete Validation.methods[methodName];
+                        }
+                    }
+
+                    if (this.validator.validate()) {
+                        if (url) {
+                            this.form.action = url;
+                        }
+                        this.form.submit();
+                    }
+                    Object.extend(Validation.methods, nv);
+                }
+            }.bind(productAddToCartForm);
+        //]]>
+        </script>
+    </div>
+
+    <div class="product-collateral toggle-content tabs">
+        <?php if ($detailedInfoGroup = $this->getChildGroup('detailed_info', 'getChildHtml')):?>
+            <dl id="collateral-tabs" class="collateral-tabs">
+                <?php foreach ($detailedInfoGroup as $alias => $html):?>
+                    <dt class="tab"><span><?php echo $this->escapeHtml($this->getChildData($alias, 'title')) ?></span></dt>
+                    <dd class="tab-container">
+                        <div class="tab-content"><?php echo $html ?></div>
+                    </dd>
+                <?php endforeach;?>
+            </dl>
+        <?php endif; ?>
+    </div>
+
+    <?php echo $this->getChildHtml('upsell_products') ?>
+    <?php echo $this->getChildHtml('product_additional_data') ?>
+
+</div>

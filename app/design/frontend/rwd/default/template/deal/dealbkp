@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="<?php echo $this->getSkinUrl('bluethink/css/bt.css')?>">
+<style>
+.mySlides {display:none;}
+</style>
+<body>
+  <?php 
+$endtime=Mage::getStoreConfig('deal/config/deal_input1',Mage::app()->getStore());
+$starttime=Mage::getStoreConfig('deal/config/deal_input2',Mage::app()->getStore());
+$deal_title=Mage::getStoreConfig('deal/config/deal_input',Mage::app()->getStore());
+
+?>
+
+<?php 
+session_start(); 
+if (!isset($_SESSION['endOfTimer'])){ 
+    $endOfTimer = time() + $endtime  ; 
+    $_SESSION['endOfTimer'] = $endOfTimer; 
+} 
+
+if(($_SESSION['endOfTimer'] - time()) < 0) { 
+      $timeTilEnd = 0; 
+} 
+else { 
+      $timeTilEnd = $_SESSION['endOfTimer'] - time(); 
+} 
+
+if($timeTilEnd <= 0) {  
+/*session_destroy();*/ 
+} 
+
+
+
+if (!isset($_SESSION['startOfTimer'])){ 
+    $startOfTimer = time() + $starttime ; 
+    $_SESSION['startOfTimer'] = $startOfTimer; 
+} 
+
+if(($_SESSION['startOfTimer'] - time()) < 0) { 
+      $timeTilStart = 0; 
+} 
+else { 
+      $timeTilStart = $_SESSION['startOfTimer'] - time(); 
+} 
+
+if($timeTilStart <= 0) {  
+session_destroy(); 
+} 
+
+
+?>
+
+<h2 class="w3-center"><?php echo $deal_title ; ?> </h2>
+
+<div class="w3-content w3-section" style="max-width:1000px">
+  <img class="mySlides" src="<?php echo $this->getSkinUrl('bluethink/img/fullimage1.jpg')?>" style="width:100%">
+  <img class="mySlides" src="<?php echo $this->getSkinUrl('bluethink/img/fullimage2.jpg')?>" style="width:100%">
+  <img class="mySlides" src="<?php echo $this->getSkinUrl('bluethink/img/fullimage3.jpg')?>" style="width:100%">
+</div>
+
+<div id="countdowntimertxt" class="countdowntimer">00:00:00</div>
+<div id="blockhide" class="blockhide">00:00:00</div>
+
+
+<script>
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}
+    x[myIndex-1].style.display = "block";
+    setTimeout(carousel, 3000); // Change image every 2 seconds
+}
+</script>
+
+<script>
+    var sTime = new Date().getTime();
+    var countDown =<?php echo $timeTilEnd; ?>;
+
+    function UpdateCountDownTime() {
+        var cTime = new Date().getTime();
+        var diff = cTime - sTime;
+        var timeStr = '';
+        var seconds = countDown - Math.floor(diff / 1000);
+        if (seconds >= 0) {
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor( (seconds-(hours*3600)) / 60);
+            seconds -= (hours*3600) + (minutes*60);
+            if( hours < 10 ){
+                timeStr = "0" + hours;
+            }else{
+                timeStr = hours;
+            }
+            if( minutes < 10 ){
+                timeStr = timeStr + ":0" + minutes;
+            }else{
+                timeStr = timeStr + ":" + minutes;
+            }
+            if( seconds < 10){
+                timeStr = timeStr + ":0" + seconds;
+            }else{
+                timeStr = timeStr + ":" + seconds;
+            }
+            document.getElementById("countdowntimertxt").innerHTML = timeStr;
+        }else{
+            document.getElementById("countdowntimertxt").style.display="none";
+            clearInterval(counter);
+            document.getElementById("deal").style.display="block";
+
+        }
+    }
+     UpdateCountDownTime();
+    var counter = setInterval(UpdateCountDownTime, 500);
+
+ var s1Time = new Date().getTime();
+    var countDownhide = <?php echo $timeTilStart; ?>; // Number of seconds to count down from.        
+
+    function RemoveCountDownTime() {
+        var c1Time = new Date().getTime();
+        var diff = c1Time - s1Time;
+        var timeStr1 = '';
+        var seconds = countDownhide - Math.floor(diff / 1000);
+        if (seconds >= 0) {
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor( (seconds-(hours*3600)) / 60);
+            seconds -= (hours*3600) + (minutes*60);
+            if( hours < 10 ){
+                timeStr1 = "0" + hours;
+            }else{
+                timeStr1 = hours;
+            }
+            if( minutes < 10 ){
+                timeStr1 = timeStr1 + ":0" + minutes;
+            }else{
+                timeStr1 = timeStr1 + ":" + minutes;
+            }
+            if( seconds < 10){
+                timeStr1 = timeStr1 + ":0" + seconds;
+            }else{
+                timeStr1 = timeStr1 + ":" + seconds;
+            }
+            document.getElementById("blockhide").innerHTML = timeStr1;
+        }else{
+            document.getElementById("blockhide").style.display="none";
+            clearInterval(counter1);
+            document.getElementById("deal").style.display="none";
+            
+        }
+    }
+    RemoveCountDownTime();
+    var counter1 = setInterval(RemoveCountDownTime, 500);
+    
+</script>
+
+<div id="deal" style="display:none;">
+   
+    
+<?php
+/*echo "Hiii";*/
+$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query="SELECT * from deal";
+$result=$conn->fetchAll($query);
+   /* echo "<pre>";
+print_r($result);
+exit;*/
+//echo $result['0']['sku'];
+foreach($result as $res)
+{
+    $dealsku= $res['sku'];
+
+    //exit;
+
+    $_product = Mage::getModel('catalog/product')->loadByAttribute('sku',$dealsku);
+    
+    //echo $url=$product->getProductUrl();
+    ?>
+<ol class="products-list" id="products-list">
+    
+        <li>
+
+            <?php // Product Image ?>
+            <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
+               
+                <?php $_imgSize = 300; ?>
+                <img id="product-collection-image-<?php echo $_product->getId(); ?>"
+                     src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->keepFrame(false)->resize($_imgSize); ?>"
+                     alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+            </a>
+            <?php // Product description ?>
+            <div class="product-shop">
+                <div class="f-fix">
+                    <div class="product-primary">
+                        <?php $_productNameStripped = $this->stripTags($_product->getName(), null, true); ?>
+                        <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>"><?php echo $_product->getName();?></a></h2>
+                        <?php if($_product->getRatingSummary()): ?>
+                        <?php echo $this->getReviewsSummaryHtml($_product) ?>
+                        <?php endif; ?>
+                        <?php
+                       
+                        if ($this->getChild('name.after')) {
+                            $_nameAfterChildren = $this->getChild('name.after')->getSortedChildren();
+                            foreach ($_nameAfterChildren as $_nameAfterChildName) {
+                                $_nameAfterChild = $this->getChild('name.after')->getChild($_nameAfterChildName);
+                                $_nameAfterChild->setProduct($_product);
+                                echo $_nameAfterChild->toHtml();
+                            }
+                        }
+                        ?>
+                    </div>
+                    <div class="product-secondary">
+                        <?php echo $this->getPriceHtml($_product, true) ?>
+                    </div>
+                    <div class="product-secondary">
+                        <?php if(!$_product->canConfigure() && $_product->isSaleable()): ?>
+                            <p class="action"><button type="button" title="<?php echo $this->__('Add to Cart') ?>" class="button btn-cart" onclick="setLocation('<?php echo $this->getAddToCartUrl($_product) ?>')"><span><span><?php echo $this->__('Add to Cart') ?></span></span></button></p>
+                        <?php elseif($_product->getStockItem() && $_product->getStockItem()->getIsInStock()): ?>
+                            <p class="action"><a title="<?php echo $this->__('View Details') ?>" class="button" href="<?php echo $_product->getProductUrl() ?>"><?php echo $this->__('View Details') ?></a></p>
+                        <?php else: ?>
+                            <p class="action availability out-of-stock"><span><?php echo $this->__('Out of stock') ?></span></p>
+                        <?php endif; ?>
+                        <ul class="add-to-links">
+                            <?php if ($this->helper('wishlist')->isAllow()) : ?>
+                                <li><a href="<?php echo $this->helper('wishlist')->getAddUrl($_product) ?>" class="link-wishlist"><?php echo $this->__('Add to Wishlist') ?></a></li>
+                            <?php endif; ?>
+                            <?php if($_compareUrl=$this->getAddToCompareUrl($_product)): ?>
+                                <li><span class="separator">|</span> <a href="<?php echo $_compareUrl ?>" class="link-compare"><?php echo $this->__('Add to Compare') ?></a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                    <div class="desc std">
+                        <?php //echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
+                        <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped ?>" class="link-learn"><?php echo $this->__('Learn More') ?></a>
+                    </div>
+                </div>
+            </div>
+        </li>
+    
+</ol>
+
+    <?php
+}
+?>
+</div>
+
+
+</body>
+</html>
+

@@ -1,0 +1,399 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+
+
+
+<!--
+  jQuery library
+-->
+<link rel="stylesheet" href="<?php echo $this->getSkinUrl('bluethink-old/css/bt.css')?>">
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('bluethink-old/css/bootstrap.min.css')?>">
+<link type="text/css" rel="stylesheet" href="<?php echo $this->getSkinUrl('bluethink-old/css/stylene.css')?>"/>
+<script class="jsbin" src="<?php echo $this->getSkinUrl('bluethink-old/js/jquery.min.js')?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('bluethink-old/js/bootstrap.min.js')?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('bluethink/jquery-1.2.3.pack.js')?>"></script>
+<!--
+  jCarousel library
+-->
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('bluethink/jquery.jcarousel.pack.js')?>"></script>
+<!--
+  jCarousel core stylesheet
+-->
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('bluethink/jquery.jcarousel.css')?>" />
+<!--
+  jCarousel skin stylesheet
+-->
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl('bluethink/skins.css')?>" />
+
+
+
+<body onLoad="$('#my-modal').modal('show');">
+   <?php $deal_popup=Mage::getStoreConfig('deal/config/banner',Mage::app()->getStore()); ?>
+    <div id="my-modal" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                
+                  <!-- <div class="row mar000"> -->
+                    <!-- <div class="col-md-4 col-xs-4 left-bgk"> -->
+                     <!--  <img src="<?php //echo $this->getSkinUrl('bluethink/img/offers.jpg')?>" alt=""> -->
+                      <!-- <div class="left-inn text-center">
+                        <h1><span>subscription</span><br>OFFER</h1>
+                        <h3>GET A COUPON WORTH</h3>
+                        <p class="sp-nw"><span>AED </span> 50</p>
+                        <p class="aed"><a href="#">SHOP NOW</a></p>
+                      </div> -->
+                 <!--    </div> -->
+                    <div class="col-md-8 col-xs-8 right-bg">
+                      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                      <div class="right-bgk text-center">
+                        <img src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).'banner/'.'images/'.$deal_popup ;?>" alt="">
+                        <!-- <img src="img/popup_animation.gif" alt=""> -->
+                        <!-- <h1>SUBSCRIBE US</h1>
+                        <h3>to get a worth AED 50 on your first purchase </h3> -->
+                       <!--  <p class="pg-text">Coupon will be emailed to you within 24 hours</p>
+                        <p class="pg-text toget">ENTER YOUR EMAIL AND PHONE NUMBER TO GET COUPON CODE</p>
+                        <input class="emil" type="email" placeholder="Enter your email here">
+                        <input class="emil" type="number" placeholder="Enter your Phone number">
+                        <input class="emil get-yr" type="button" value="SUBSCRIBE NOW">
+                        <div class="padd-top-bott">
+                          <h4 class="terms">Terms &amp; conditions</h4>
+                          <p class="pg-te">
+                            First time user only. 50AED off on your first purchase, and <br>
+                            entering your email also makes you eligible to receive future promotional email.
+                          </p> -->
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div> 
+    </div>
+
+  <?php 
+$endtime=Mage::getStoreConfig('deal/config/deal_input1',Mage::app()->getStore());
+$starttime=Mage::getStoreConfig('deal/config/deal_input2',Mage::app()->getStore());
+$deal_title=Mage::getStoreConfig('deal/config/deal_input',Mage::app()->getStore());
+$deal_popup=Mage::getStoreConfig('deal/config/banner',Mage::app()->getStore());
+
+
+?>
+
+<?php 
+session_start(); 
+if (!isset($_SESSION['endOfTimer'])){ 
+    $endOfTimer = time() + $endtime  ; 
+    $_SESSION['endOfTimer'] = $endOfTimer; 
+} 
+
+if(($_SESSION['endOfTimer'] - time()) < 0) { 
+      $timeTilEnd = 0; 
+} 
+else { 
+      $timeTilEnd = $_SESSION['endOfTimer'] - time(); 
+} 
+
+if($timeTilEnd <= 0) {  
+/*session_destroy();*/ 
+} 
+
+
+
+if (!isset($_SESSION['startOfTimer'])){ 
+    $startOfTimer = time() + $starttime ; 
+    $_SESSION['startOfTimer'] = $startOfTimer; 
+} 
+
+if(($_SESSION['startOfTimer'] - time()) < 0) { 
+      $timeTilStart = 0; 
+} 
+else { 
+      $timeTilStart = $_SESSION['startOfTimer'] - time(); 
+} 
+
+if($timeTilStart <= 0) {  
+session_destroy(); 
+} 
+
+
+?>
+
+<h2 class="w3-center"><?php echo $deal_title ; ?> </h2>
+<?php
+$conn1 = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query1="SELECT fileToUpload from deal where fileToUpload !=''";
+$result1=$conn1->fetchAll($query1);
+?>
+<div class="w3-content w3-section" style="max-width:1000px">
+     <?php foreach($result1 as $res1)
+{
+    $dealimg= $res1['fileToUpload']; ?>
+  <img class="mySlides" src="<?php echo Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_MEDIA).'images/'.$dealimg ; ?>" style="width:100%">
+  
+  <?php } ?>
+</div>
+
+<h2 id="dstart">Deal Start In</h2><div id="countdowntimertxt" class="countdowntimer">00:00:00</div>
+<h2 id="dend" style="display:none;">Deal End In</h2><div id="blockhide" class="blockhide" style="display:none;">00:00:00</div>
+
+<script>
+
+    var sTime = new Date().getTime();
+    var countDown =<?php echo $timeTilEnd; ?>;
+
+    function UpdateCountDownTime() {
+        var cTime = new Date().getTime();
+        var diff = cTime - sTime;
+        var timeStr = '';
+        var seconds = countDown - Math.floor(diff / 1000);
+        if (seconds >= 0) {
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor( (seconds-(hours*3600)) / 60);
+            seconds -= (hours*3600) + (minutes*60);
+            if( hours < 10 ){
+                timeStr = "0" + hours;
+            }else{
+                timeStr = hours;
+            }
+            if( minutes < 10 ){
+                timeStr = timeStr + ":0" + minutes;
+            }else{
+                timeStr = timeStr + ":" + minutes;
+            }
+            if( seconds < 10){
+                timeStr = timeStr + ":0" + seconds;
+            }else{
+                timeStr = timeStr + ":" + seconds;
+            }
+            document.getElementById("countdowntimertxt").innerHTML = timeStr;
+        }else{
+            document.getElementById("countdowntimertxt").style.display="none";
+            document.getElementById("dstart").style.display="none";
+            clearInterval(counter);
+            document.getElementById("dend").style.display="block";
+            document.getElementById("blockhide").style.display="block";
+            
+            var s1Time = new Date().getTime();
+            var countDownhide = <?php echo $timeTilStart; ?>;
+
+            function RemoveCountDownTime() {
+        var c1Time = new Date().getTime();
+        var diff = c1Time - s1Time;
+        var timeStr1 = '';
+        var seconds = countDownhide - Math.floor(diff / 1000);
+        if (seconds >= 0) {
+            var hours = Math.floor(seconds / 3600);
+            var minutes = Math.floor( (seconds-(hours*3600)) / 60);
+            seconds -= (hours*3600) + (minutes*60);
+            if( hours < 10 ){
+                timeStr1 = "0" + hours;
+            }else{
+                timeStr1 = hours;
+            }
+            if( minutes < 10 ){
+                timeStr1 = timeStr1 + ":0" + minutes;
+            }else{
+                timeStr1 = timeStr1 + ":" + minutes;
+            }
+            if( seconds < 10){
+                timeStr1 = timeStr1 + ":0" + seconds;
+            }else{
+                timeStr1 = timeStr1 + ":" + seconds;
+            }
+            document.getElementById("blockhide").innerHTML = timeStr1;
+        }else{
+            document.getElementById("blockhide").style.display="none";
+            document.getElementById("dend").style.display="none";
+            clearInterval(counter1);
+            
+            
+        }
+    }
+    RemoveCountDownTime();
+    var counter1 = setInterval(RemoveCountDownTime, 500);
+    
+
+        }
+    }
+     UpdateCountDownTime();
+    var counter = setInterval(UpdateCountDownTime, 500);
+
+     // Number of seconds to count down from.        
+
+    
+</script>
+
+
+<script type="text/javascript">
+function mycarousel_initCallback(carousel)
+{
+    // Disable autoscrolling if the user clicks the prev or next button.
+    carousel.buttonNext.bind('click', function() {
+        carousel.startAuto(0);
+    });
+
+    carousel.buttonPrev.bind('click', function() {
+        carousel.startAuto(0);
+    });
+
+    // Pause autoscrolling if the user moves with the cursor over the clip.
+    carousel.clip.hover(function() {
+        carousel.stopAuto();
+    }, function() {
+        carousel.startAuto();
+    });
+};
+
+jQuery(document).ready(function() {
+    jQuery('#mycarousel').jcarousel({
+        auto: false,
+        wrap: 'last',
+        scroll: 1,
+        initCallback: mycarousel_initCallback
+    });
+});
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+</script>
+<script type="text/javascript">
+jQuery.noConflict();
+function mycarousel_initCallback(carousel)
+{
+    // Disable autoscrolling if the user clicks the prev or next button.
+    carousel.buttonNext.bind('click', function() {
+        carousel.startAuto(0);
+    });
+
+    carousel.buttonPrev.bind('click', function() {
+        carousel.startAuto(0);
+    });
+
+    // Pause autoscrolling if the user moves with the cursor over the clip.
+    carousel.clip.hover(function() {
+        carousel.stopAuto();
+    }, function() {
+        carousel.startAuto();
+    });
+};
+
+jQuery(document).ready(function() {
+    jQuery('#mycarousel').jcarousel({
+        auto: 3,
+        wrap: 'last',
+        scroll: 1,
+        initCallback: mycarousel_initCallback
+    });
+});
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+</script>
+
+<script>
+jQuery.noConflict();
+var myIndex = 0;
+carousel();
+
+function carousel() {
+    var i;
+    var x = document.getElementsByClassName("mySlides");
+    for (i = 0; i < x.length; i++) {
+       x[i].style.display = "none";
+    }
+    myIndex++;
+    if (myIndex > x.length) {myIndex = 1}
+    x[myIndex-1].style.display = "block";
+    setTimeout(carousel, 3000); // Change image every 2 seconds
+}
+</script>
+<script type="text/javascript">
+//alert("hii");
+
+      $(window).load(function(){
+        //alert("hii");
+         $('#myModal').modal('show');
+      });
+</script>
+<?php
+/*echo "Hiii";*/
+$conn = Mage::getSingleton('core/resource')->getConnection('core_read');
+$query="SELECT * from deal";
+$result=$conn->fetchAll($query);
+   /* echo "<pre>";
+print_r($result);
+exit;*/
+//echo $result['0']['sku'];
+?>
+
+
+  
+<div id="wrap">
+
+
+  <ul id="mycarousel" class="jcarousel-skin-tango">
+    <?php foreach($result as $res)
+{
+    $dealsku= $res['sku'];
+
+    //exit;
+
+    $_product = Mage::getModel('catalog/product')->loadByAttribute('sku',$dealsku);
+
+    ?><li><a href="<?php echo $_product->getProductUrl()?>" ><img id="product-collection-image-<?php echo $_product->getId(); ?>" src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image'); ?>"<?php echo $_product->getName();?> alt=""  width="240" height="154"/>
+</a><h2><?php echo $_product->getName();?></h2></li>
+
+    <?php
+    
+    
+   } ?>  
+   
+  </ul>
+</div>
+
+
+    
+ 
+  
+
+
+</body>
+</html>
